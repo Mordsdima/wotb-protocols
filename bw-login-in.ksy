@@ -9,6 +9,9 @@ types:
     seq:
       - id: reply_length
         type: u4
+      - id: element_req_id
+        type: u4
+        if: _root.flags & 1 == 1 or _root.element_id == element_ids::reply
       - id: reply_data
         size: reply_length - 4
   element:
@@ -26,6 +29,4 @@ seq:
    enum: element_ids
  - id: reply
    type: reply
- - id: element_req_id
-   type: u4
-   if: flags & 1 == 1 or element_id == element_ids::reply
+ 

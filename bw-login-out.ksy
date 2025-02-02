@@ -13,14 +13,10 @@ types:
   
   element_login:
     seq:
-      - id: unk
-        size: 5
       - id: protocol_version
         type: u4
-      - id: is_encrypted
-        type: u1
       - id: login_data
-        size: _root.element.element_length - 10
+        size: _root.element.element_length - 4
 
   element:
     seq:
@@ -29,6 +25,12 @@ types:
           switch-on: _root.element_id
           cases:
             element_ids::login: u2
+      - id: element_req_id
+        type: u4
+        if: _root.flags & 1 == 1
+      - id: element_next_offset
+        type: u2 
+        if: _root.flags & 1 == 1
       - id: element_data
         type:
           switch-on: _root.element_id
@@ -36,8 +38,7 @@ types:
             element_ids::ping: element_ping
             element_ids::login: element_login
 seq:
-  - id: prefix
-    size: 4
+
   - id: flags
     type: u2
   - id: element_id
@@ -45,12 +46,6 @@ seq:
     enum: element_ids
   - id: element
     type: element
-  - id: element_req_id
-    type: u4
-    if: flags & 1 == 1
-  - id: element_next_offset
-    type: u2 
-    if: flags & 1 == 1
   - id: footer
     doc: likely?
     type: u2
